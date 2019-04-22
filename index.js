@@ -41,22 +41,41 @@ boxes.push({
   x: width - 10,
   y: 0,
   width: 50,
- height: height
+  height: height
 });
 
 const random = (min, max) => Math.random() * (max - min) + min;
+
+let current = {
+  x: random(0, 100),
+  y: random(height - 100, height),
+  width: random(10, 100),
+  height: random(10, 20)
+}
+boxes.push(current)
+
+function getJumpable(current) {
+  console.log(current)
+  let x = random(current.x, current.x + 100)
+  let y = random(current.y - 100, current.y)
+  return {x, y}
+}
+
 let x = random(5,10)
 console.log(x)
-for (i = 1; i <= x; i++) {
-  console.log('box!');
-  // make a random shape
-  boxes.push({
-    x: random(0, width),
-    y: random(0, height),
-    width: random(10, 100),
-    height: random(10, 100)
-  })
 
+for (i = 1; i <= x; i++) {
+  //console.log(current)
+  let {x, y} = getJumpable(current)
+  // make a random shape
+  current = {
+    x,
+    y,
+    width: random(10, 100),
+    height: random(10, 20)
+  }
+  console.log('here', current)
+  boxes.push(current)
   // TODO: add 'jumpability' parameter to ensure level completability
 }
 
@@ -111,12 +130,13 @@ function update() {
 
   }
 
-  if(player.grounded){
+  player.x += player.velX;
+  player.y += player.velY;
+
+  if (player.grounded){
        player.velY = 0;
   }
 
-  player.x += player.velX;
-  player.y += player.velY;
 
   ctx.fill();
   ctx.fillStyle = "red";
