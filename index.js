@@ -8,18 +8,19 @@ var canvas = document.getElementById("canvas"),
   width = 1000,
   height = 500,
   player = {
-      x: 0,
-      y: height - 15,
-      width: 20,
-      height: 20,
-      speed: 4,
+      x: 20,
+      y: height - 130,
+      width: 30,
+      height: 50,
+      speed: 3.5,
       velX: 0,
       velY: 0,
       jumping: false,
-      grounded: false
+      grounded: false,
+      won: false
   },
   keys = [],
-  friction = 0.8,
+  friction = .7,
   gravity = 0.3;
 
 var boxes = [];
@@ -47,36 +48,30 @@ boxes.push({
 const random = (min, max) => Math.random() * (max - min) + min;
 
 let current = {
-  x: random(0, 100),
-  y: random(height - 100, height),
+  x: random(50, 200),
+  y: random(height - 85, height),
   width: random(10, 100),
-  height: random(10, 20)
+  height: 10
 }
 boxes.push(current)
 
 function getJumpable(current) {
-  console.log(current)
-  let x = random(current.x, current.x + 100)
-  let y = random(current.y - 100, current.y)
+  // implements 'jumpability' parameter to ensure level completability
+  let x = random(current.x + 30, current.x + 100)
+  let y = random(current.y - 85, current.y - 60)
   return {x, y}
 }
 
-let x = random(5,10)
-console.log(x)
-
-for (i = 1; i <= x; i++) {
-  //console.log(current)
+while ((current.y - 120) > 0) {
   let {x, y} = getJumpable(current)
-  // make a random shape
+  // make a random shape based on jumpability
   current = {
     x,
     y,
     width: random(10, 100),
-    height: random(10, 20)
+    height: 10 // keep height consistent fir math purposes
   }
-  console.log('here', current)
   boxes.push(current)
-  // TODO: add 'jumpability' parameter to ensure level completability
 }
 
 canvas.width = width;
@@ -137,10 +132,23 @@ function update() {
        player.velY = 0;
   }
 
+  if (player.y <= 0 && player.won !== true) {
+    player.won = true;
+    // do win screen
+    console.log('winner!!')
+    if (confirm('Congrats, you won! Play again?')) {
+      location.reload();
+    } else {
+      location.reload();
+    }
+  }
 
+  const image = document.getElementById('source');
   ctx.fill();
-  ctx.fillStyle = "red";
-  ctx.fillRect(player.x, player.y, player.width, player.height);
+  //ctx.drawImage(image, player.x, player.y, player.width, player.height);
+  ctx.drawImage(image, player.x, player.y, 60, 60);
+  // ctx.fillStyle = "red";
+  // ctx.fillRect(player.x, player.y, player.width, player.height);
 
   requestAnimationFrame(update);
 }
