@@ -23,22 +23,22 @@ var canvas = document.getElementById("canvas"),
   friction = .7,
   gravity = 0.3;
 
-var boxes = [];
+var platforms = [];
 
 // dimensions
-boxes.push({
+platforms.push({
   x: 0,
   y: 0,
   width: 10,
   height: height
 });
-boxes.push({
+platforms.push({
   x: 0,
   y: height - 2,
   width: width,
   height: 50
 });
-boxes.push({
+platforms.push({
   x: width - 10,
   y: 0,
   width: 50,
@@ -47,31 +47,31 @@ boxes.push({
 
 const random = (min, max) => Math.random() * (max - min) + min;
 
-let current = {
+let currentPlatform = {
   x: random(50, 200),
   y: random(height - 85, height),
   width: random(10, 100),
   height: 10
 }
-boxes.push(current)
+platforms.push(currentPlatform)
 
-function getJumpable(current) {
+function getJumpable(currentPlatform) {
   // implements 'jumpability' parameter to ensure level completability
-  let x = random(current.x + 30, current.x + 100)
-  let y = random(current.y - 85, current.y - 60)
+  let x = random(currentPlatform.x + 30, currentPlatform.x + 100)
+  let y = random(currentPlatform.y - 85, currentPlatform.y - 60)
   return {x, y}
 }
 
-while ((current.y - 120) > 0) {
-  let {x, y} = getJumpable(current)
+while ((currentPlatform.y - 120) > 0) {
+  let {x, y} = getJumpable(currentPlatform)
   // make a random shape based on jumpability
-  current = {
+  currentPlatform = {
     x,
     y,
     width: random(10, 100),
     height: 10 // keep height consistent fir math purposes
   }
-  boxes.push(current)
+  platforms.push(currentPlatform)
 }
 
 canvas.width = width;
@@ -108,10 +108,10 @@ function update() {
   ctx.beginPath();
 
   player.grounded = false;
-  for (var i = 0; i < boxes.length; i++) {
-      ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+  for (var i = 0; i < platforms.length; i++) {
+      ctx.rect(platforms[i].x, platforms[i].y, platforms[i].width, platforms[i].height);
 
-      var dir = colCheck(player, boxes[i]);
+      var dir = colCheck(player, platforms[i]);
 
       if (dir === "l" || dir === "r") {
           player.velX = 0;
