@@ -5,8 +5,8 @@
 
 var canvas = document.getElementById("canvas"),
   ctx = canvas.getContext("2d"),
-  width = 1000,
-  height = 500,
+  width = 1500,
+  height = 750,
   player = {
       x: 20,
       y: height - 130,
@@ -48,7 +48,7 @@ platforms.push({
 const random = (min, max) => Math.random() * (max - min) + min;
 
 let currentPlatform = {
-  x: random(50, 200),
+  x: random(50, 500),
   y: random(height - 85, height),
   width: random(10, 100),
   height: 10
@@ -57,18 +57,31 @@ platforms.push(currentPlatform)
 
 function getJumpable(currentPlatform) {
   // implements 'jumpability' parameter to ensure level completability
-  let x = random(currentPlatform.x + 30, currentPlatform.x + 100)
-  let y = random(currentPlatform.y - 85, currentPlatform.y - 60)
+  // create upper and lower bounds for x
+  // so platforms could go left or right
+  // but not be directly on top of each other
+  let xLower = random(currentPlatform.x - 100, currentPlatform.x - 60)
+  let xUpper = random(currentPlatform.x + 60, currentPlatform.x + 100)
+  let x
+  // prevents platforms from going off screen
+  if (xLower <= 50) {
+    x = xUpper
+  } else if (xUpper >= (width - 50)) {
+    x = xLower
+  } else {
+    x = Math.random() < 0.5 ? xLower : xUpper
+  }
+  let y = random(currentPlatform.y - 84, currentPlatform.y - 65)
   return {x, y}
 }
 
-while ((currentPlatform.y - 120) > 0) {
+while ((currentPlatform.y - 130) > 0) {
   let {x, y} = getJumpable(currentPlatform)
   // make a random shape based on jumpability
   currentPlatform = {
     x,
     y,
-    width: random(10, 100),
+    width: random(10, 60),
     height: 10 // keep height consistent fir math purposes
   }
   platforms.push(currentPlatform)
